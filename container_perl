@@ -1,0 +1,62 @@
+#!/bin/perl
+use v5.34;
+use warnings;
+use experimental 'signatures';
+
+use constant {
+	BIN => "/usr/local/bin/perl",
+	VERBOSE => 1,
+};
+
+printf( "Running [%s]\n\n", join(' ', podman_cmd()) ) if VERBOSE();
+exec( podman_cmd() );
+#gen_shell_script( podman_cmd() );
+
+# generates the podman cmd
+sub podman_cmd() {
+	return (
+		qw(podman run --rm),
+		'--env-host=false',
+		generate_lib_maps()->@*,
+		('--workdir', '/workingdir/'),
+		('-v', '.:/workingdir/'),
+		get_image(),
+		BIN,
+		'-Mlibreplace',
+		@ARGV
+	);
+}
+
+# generates the image name that corresponds to the current perl you're running
+sub get_image() {
+	my $version = $^V;
+	$version =~ s/.\d+$//;
+	$version =~ s/^v//;
+	return "perl:$version";
+}
+
+# Generates the library mappings and sets it for perl
+sub generate_lib_maps() {
+	my (@vol_map, @p5lib);
+	for (@INC) {
+		state $cnt = 0;
+		next unless -e $_;
+		$cnt++;
+		my $container_lib = "/host/dep/$cnt";
+		push @vol_map, '-v', "$_:$container_lib:ro";
+		push @p5lib, $container_lib;
+	}
+	return [
+		@vol_map,
+		'-e', sprintf( "PERL5LIB=%s", join ':', @p5lib )
+	];
+}
+
+sub gen_shell_script(@args) {
+	my $output;
+	$output .= "#!/bin/sh\n";
+	$output .= "$args[0] \\\n";
+	$output .= sprintf("\t%-200s\\\n", $_) for @args[1..($#args-1)];
+	$output .= "\t$args[$#args];\n";
+	$output;
+}
