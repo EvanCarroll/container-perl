@@ -8,7 +8,7 @@ does is,
 * Get the current `@INC` on the host.
 * Prepare a container that maps the host's `@INC` directories to the container
 * Clobbers the @INC of the container perl with just the mapped dirs from the
-	host using [`libreplcae`](https://metacpan.org/pod/libreplace).
+	host using [`libreplace`](https://metacpan.org/pod/libreplace).
 * `exec`'s a copy of a Perl using Podman in a container as above.
 
 Security
