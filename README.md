@@ -11,6 +11,38 @@ does is,
 	host using [`libreplcae`](https://metacpan.org/pod/libreplace).
 * `exec`'s a copy of a Perl using Podman in a container as above.
 
+Example
+====
+
+```sh
+container-perl -E 'Hello World';
+container-perl ./test.pl
+```
+
+For the purpose of the demo, `test.pl` outputs the UID. This will change when
+run inside and outside of `container-perl` because user namespaces allow 
+perl running in the namespace to think it's root. While invoking this file with
+regular perl will show it as the UID of the user.
+
+Security
+====
+
+The goal of this program is to allow arbitrary code executation of perl within
+the context of a secure user-namespace. To achive this `container-perl`
+requires
+
+* usernamespaces enabled in the kernel
+* and, `podman` installed.
+
+Notes
+====
+
+Currently, all the deps directory outside the directory are mounted read-only.
+The working directory is mounted read-write.
+
+Inspiration
+----
+
 The source of inspiration of this was Brian Scannell's talk in The Perl
 Conference 2022 on IDE and checking Perl syntax. In that talk Brian puts
 forward two methods of dealing with the insecurity of checking perl syntax,
@@ -21,22 +53,3 @@ with `perl -c`
 2. Executing the syntax checking on a remote machine, over SSH.
 
 This approach uses podman to create a ephemeral container to syntax check Perl.
-
-Notes
-====
-
-Currently, all the deps directory outside the directory are mounted read-only.
-The working directory is mounted read-write.
-
-Example
-====
-
-```sh
-container-perl -E 'Hello World';
-container-perl ./test.pl
-```
-
-For the purpose of the demo, `test.pl` outputs the UID. This will change when
-run inside and outside of `container-perl` because user namespaces allow the
-perl running in the namespace to think it's root. While invoking this file with
-regular perl will show it as the UID of the user.
