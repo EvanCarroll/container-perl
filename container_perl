@@ -59,7 +59,7 @@ sub generate_lib_maps() {
 	];
 }
 
-sub gen_shell_script(@args) {
+sub gen_shell_script($cmd, @args) {
 	my $output;
 	my $longest = 0;
 	for (@args) {
@@ -68,8 +68,7 @@ sub gen_shell_script(@args) {
 	}
 	$longest += 5;
 	$output .= "#!/bin/sh\n";
-	$output .= "$args[0] \\\n";
-	$output .= sprintf("\t%-${longest}s\\\n", $_) for @args[1..($#args-1)];
-	$output .= "\t$args[$#args];\n";
+	$output .= "$cmd \\\n";
+	$output .= sprintf("\t%-${longest}s\\\n", $_) for @args;
 	return $output;
 }
