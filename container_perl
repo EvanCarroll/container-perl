@@ -37,7 +37,7 @@ sub podman_cmd() {
 # generates the image name that corresponds to the current perl you're running
 sub get_image() {
 	my $version = $^V;
-	$version =~ s/.\d+$//;
+	$version =~ s/\.\d+$//a;
 	$version =~ s/^v//;
 	return "perl:$version";
 }
