@@ -4,13 +4,19 @@ use warnings;
 use experimental 'signatures';
 
 use constant {
-	BIN => "/usr/local/bin/perl",
-	VERBOSE => 1,
+	# location in container
+	BIN           => "/usr/local/bin/perl",
+	VERBOSE       => 0,
+	OUTPUT_SCRIPT => 0,
 };
 
-printf( "Running [%s]\n\n", join(' ', podman_cmd()) ) if VERBOSE();
-exec( podman_cmd() );
-#gen_shell_script( podman_cmd() );
+if (OUTPUT_SCRIPT()) {
+	say gen_shell_script( podman_cmd() );
+}
+else {
+	printf( "Running [%s]\n\n", join(' ', podman_cmd()) ) if VERBOSE();
+	exec( podman_cmd() );
+}
 
 # generates the podman cmd
 sub podman_cmd() {
@@ -19,6 +25,7 @@ sub podman_cmd() {
 		'--env-host=false',
 		generate_lib_maps()->@*,
 		('--workdir', '/workingdir/'),
+		'--network=none',
 		('-v', '.:/workingdir/'),
 		get_image(),
 		BIN,
@@ -54,9 +61,15 @@ sub generate_lib_maps() {
 
 sub gen_shell_script(@args) {
 	my $output;
+	my $longest = 0;
+	for (@args) {
+		my $len = length $_;
+		$longest = $len if  $len > $longest;
+	}
+	$longest += 5;
 	$output .= "#!/bin/sh\n";
 	$output .= "$args[0] \\\n";
-	$output .= sprintf("\t%-200s\\\n", $_) for @args[1..($#args-1)];
+	$output .= sprintf("\t%-${longest}s\\\n", $_) for @args[1..($#args-1)];
 	$output .= "\t$args[$#args];\n";
 	$output;
 }
