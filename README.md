@@ -11,6 +11,12 @@ does is,
 	host using [`libreplcae`](https://metacpan.org/pod/libreplace).
 * `exec`'s a copy of a Perl using Podman in a container as above.
 
+Security
+---
+
+The goal of this program is to allow arbitrary code executation of perl within
+the context of a secure user-namespace.
+
 Example
 ====
 
@@ -24,15 +30,14 @@ run inside and outside of `container-perl` because user namespaces allow
 perl running in the namespace to think it's root. While invoking this file with
 regular perl will show it as the UID of the user.
 
-Security
+Installation
 ====
 
-The goal of this program is to allow arbitrary code executation of perl within
-the context of a secure user-namespace. To achive this `container-perl`
-requires
+Container perl requires,
 
 * usernamespaces enabled in the kernel
-* and, `podman` installed.
+* `podman` installed
+* [`libreplace`](https://github.com/EvanCarroll/perl5-libreplace) installed
 
 Notes
 ====
