@@ -71,5 +71,5 @@ sub gen_shell_script(@args) {
 	$output .= "$args[0] \\\n";
 	$output .= sprintf("\t%-${longest}s\\\n", $_) for @args[1..($#args-1)];
 	$output .= "\t$args[$#args];\n";
-	$output;
+	return $output;
 }
