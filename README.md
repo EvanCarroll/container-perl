@@ -35,9 +35,9 @@ Installation
 
 Container perl requires,
 
-* usernamespaces enabled in the kernel
+* [usernamespaces enabled](https://unix.stackexchange.com/a/602409/3285)
 * `podman` installed
-* [`libreplace`](https://github.com/EvanCarroll/perl5-libreplace) installed
+* Perl 5's [`libreplace`](https://github.com/EvanCarroll/perl5-libreplace) installed
 
 Notes
 ====
