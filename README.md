@@ -22,10 +22,10 @@ Example
 
 ```sh
 container-perl -E 'say "Hello World"';
-container-perl ./test.pl
+container-perl ./testfile.pl
 ```
 
-For the purpose of the demo, `test.pl` outputs the UID. This will change when
+For the purpose of the demo, [`testfile.pl`](./testfile.pl) outputs the UID. This will change when
 run inside and outside of `container-perl` because user namespaces allow 
 perl running in the namespace to think it's root. While invoking this file with
 regular perl will show it as the UID of the user.
